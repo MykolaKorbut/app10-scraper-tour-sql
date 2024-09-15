@@ -1,9 +1,7 @@
-from http.client import responses
-
 import requests
 import selectorlib
 
-URL = 'http://programmer100.pythonanywhere.com/tours/'
+URL = "http://programmer100.pythonanywhere.com/tours/"
 
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) '
@@ -12,9 +10,18 @@ HEADERS = {
 
 def scrape(url):
     """Scrape the page source from the URL"""
-    responses = requests.get(url=url, headers=HEADERS)
-    source = responses.text
+    response = requests.get(url=url, headers=HEADERS)
+    source = response.text
     return source
 
+
+def extract(source):
+    extractor = selectorlib.Extractor.from_yaml_file("extract.yaml")
+    value = extractor.extract(source)["tours"]
+    return value
+
+
 if __name__ == "__main__":
-    print(scrape(URL))
+    scraped = scrape(URL)
+    extracted = extract(scraped)
+    print(extracted)
